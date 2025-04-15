@@ -4,29 +4,6 @@
 > O uso desta ferramenta em redes ou domínios sem autorização pode ser ilegal.
 > O autor não se responsabiliza por quaisquer usos indevidos. Use com responsabilidade e ética.
 
-
-
-
-RRRRRRRRRRRRRRRRR                                                                              XXXXXXX       XXXXXXX
-R::::::::::::::::R                                                                             X:::::X       X:::::X
-R::::::RRRRRR:::::R                                                                            X:::::X       X:::::X
-RR:::::R     R:::::R                                                                           X::::::X     X::::::X
-  R::::R     R:::::R    eeeeeeeeeeee        cccccccccccccccc   ooooooooooo   nnnn  nnnnnnnn    XXX:::::X   X:::::XXX
-  R::::R     R:::::R  ee::::::::::::ee    cc:::::::::::::::c oo:::::::::::oo n:::nn::::::::nn     X:::::X X:::::X
-  R::::RRRRRR:::::R  e::::::eeeee:::::ee c:::::::::::::::::co:::::::::::::::on::::::::::::::nn     X:::::X:::::X
-  R:::::::::::::RR  e::::::e     e:::::ec:::::::cccccc:::::co:::::ooooo:::::onn:::::::::::::::n     X:::::::::X
-  R::::RRRRRR:::::R e:::::::eeeee::::::ec::::::c     ccccccco::::o     o::::o  n:::::nnnn:::::n     X:::::::::X
-  R::::R     R:::::Re:::::::::::::::::e c:::::c             o::::o     o::::o  n::::n    n::::n    X:::::X:::::X
-  R::::R     R:::::Re::::::eeeeeeeeeee  c:::::c             o::::o     o::::o  n::::n    n::::n   X:::::X X:::::X
-  R::::R     R:::::Re:::::::e           c::::::c     ccccccco::::o     o::::o  n::::n    n::::nXXX:::::X   X:::::XXX
-RR:::::R     R:::::Re::::::::e          c:::::::cccccc:::::co:::::ooooo:::::o  n::::n    n::::nX::::::X     X::::::X
-R::::::R     R:::::R e::::::::eeeeeeee   c:::::::::::::::::co:::::::::::::::o  n::::n    n::::nX:::::X       X:::::X
-R::::::R     R:::::R  ee:::::::::::::e    cc:::::::::::::::c oo:::::::::::oo   n::::n    n::::nX:::::X       X:::::X
-RRRRRRRR     RRRRRRR    eeeeeeeeeeeeee      cccccccccccccccc   ooooooooooo     nnnnnn    nnnnnnXXXXXXX       XXXXXXX
-
- https://github.com/mairinkdev
-
-
 ##
 
 ReconX é uma ferramenta escrita em **Rust** para escaneamento de portas TCP e detecção de falhas em configurações DNS via **Zone Transfer (AXFR)**.
