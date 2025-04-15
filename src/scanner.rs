@@ -9,7 +9,7 @@ const COMMON_PORTS: [u16; 30] = [
     995, 389, 8081, 10000,
 ];
 
-pub async fn scan_target(domain: &str) {
+pub async fn scan_target(domain: &str, port_arg: &Option<String>) {
     println!("{}", "🔎 Resolvendo dominio...".blue());
 
     let addr = format!("{}:0", domain);
@@ -30,7 +30,15 @@ pub async fn scan_target(domain: &str) {
     println!("🎣 IP encontrado: {}", ip.to_string().green());
     println!("{}", "😼 Iniciando escaneamento...".yellow());
 
-    for port in COMMON_PORTS {
+    let ports = match parse_ports(port_arg) {
+        Ok(p) => p,
+        Err(e) => {
+            println!("{}", format!("❌ Erro ao interpretar as portas: {}", e).red());
+            return;
+        }
+    };
+
+    for port in ports {
         let socket = format!("{}:{}", ip, port);
         let timeout = std::time::Duration::from_millis(800);
 
@@ -39,9 +47,37 @@ pub async fn scan_target(domain: &str) {
         if let Ok(Ok(_)) = res {
             println!("{} {}:{} {}", "✅".green(), domain, port.to_string().bold(), "(aberto)".green());
         } else {
-            println!("{} {}:{} {}", "🛑".red(), domain, port.to_string().dimmed(), "(fechado)".red());
+            println!("{} {}:{} {}", "❌".green(), domain, port.to_string().dimmed(), "(fechado)".red());
         }
     }
 
-    println!("{}", "✅ Escaneamento finalizado!".blue());
+fn parse_ports(input: &Option<String>) -> Result<Vec<u16>, String> {
+    if let Some(raw) = input {
+        if raw.contains(',') {
+            let mut ports = Vec::new();
+            for part in raw.split(',') {
+                let port = part.trim().parse::<u16>()
+                .map_err(|_| format!("Porta invalida {}", part))?;
+            ports.push(port);
+            }
+            Ok(ports)
+        } else if raw.contains('-') {
+            let parts: Vec<&str> = raw.split('-').collect();
+            if parts.len() != 2 {
+                return Err("Range invalido, use formato ex: 1000-1010".to_string());
+            }
+            let start = parts[0].trim().parse::<u16>().map_err(|_| "Inicio invalido")?;
+            let end = parts[1].trim().parse::<u16>().map_err(|_| "Fim invalido")?;
+            if start > end {
+                return Err("Range invertido".to_string());
+            }
+            Ok((start..=end).collect())
+        } else {
+            let port = raw.trim().parse::<u16>().map_err(|_| "Porta invalida")?;
+            Ok(vec![port])
+        }
+    } else {
+        Ok(COMMON_PORTS.to_vec())
+    }
+}
 }

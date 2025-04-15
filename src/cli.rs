@@ -9,4 +9,7 @@ pub struct CliArgs {
 
     #[clap(long, default_value_t = false)]
     pub dns_zone_transfer: bool,
+
+    #[clap(long)]
+    pub ports: Option<String>,
 }
