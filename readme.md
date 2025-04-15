@@ -62,4 +62,4 @@ git clone https://github.com/mairinkdev/reconx
 cd reconx
 cargo run -- --target example.com
 
-👨‍💻 Projeto pessoal de @mairinkdev com orgulho
+👨‍💻 Projeto de @mairinkdev
