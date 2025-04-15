@@ -12,4 +12,7 @@ pub struct CliArgs {
 
     #[clap(long)]
     pub ports: Option<String>,
+
+    #[clap(long)]
+    pub only_open: bool,
 }
