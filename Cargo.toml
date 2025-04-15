@@ -1,0 +1,13 @@
+[package]
+name = "reconx"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+colored = "1.9"
+trust-dns-client = "0.23.1"
+trust-dns-proto = "0.23.1"
+trust-dns-resolver = "0.23.1"
