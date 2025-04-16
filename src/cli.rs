@@ -18,4 +18,7 @@ pub struct CliArgs {
 
     #[clap(long)]
     pub output: Option<String>,
+
+    #[clap(long, default_value_t = false)]
+    pub dns_raw: bool,
 }

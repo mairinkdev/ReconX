@@ -1,8 +1,8 @@
-use colored::*;
 use std::process::Command;
 use std::collections::HashSet;
+use colored::Colorize;
 
-pub async fn attempt_zone_transfer(domain: &str) {
+pub async fn attempt_zone_transfer(domain: &str, show_raw: bool) {
     println!("{}", "🎣 Buscando nameservers...".blue());
 
     let ns_output = Command::new("dig")
@@ -20,7 +20,7 @@ pub async fn attempt_zone_transfer(domain: &str) {
         return;
     }
 
-    let mut registros_unicos = HashSet::new(); // <- fora do loop, acumula geral
+    let mut registros_unicos = HashSet::new();
     let tipos_relevantes = ["IN A", "IN AAAA", "IN MX", "IN CNAME", "IN NS", "IN TXT"];
 
     for ns in ns_list {
@@ -40,6 +40,12 @@ pub async fn attempt_zone_transfer(domain: &str) {
                     println!("{} {}", "🛑 Transferência negada por".red(), ns.trim());
                 } else {
                     println!("{}", "🚨 Transferência Permitida!".red().bold());
+
+                    if show_raw {
+                        println!("{}", "\n📄 Conteúdo bruto da transferência:\n".blue().bold());
+                        println!("{}", stdout);
+                        continue;
+                    }
 
                     let mut novos_registros = vec![];
 
@@ -87,5 +93,10 @@ pub async fn attempt_zone_transfer(domain: &str) {
         }
     }
 
-    println!("\n{}", "✅ Transferências finalizadas. Todos os registros únicos foram exibidos.".blue().bold());
+    println!(
+        "\n{}",
+        "✅ Transferências finalizadas. Todos os registros únicos foram exibidos."
+            .blue()
+            .bold()
+    );
 }
