@@ -15,4 +15,7 @@ pub struct CliArgs {
 
     #[clap(long)]
     pub only_open: bool,
+
+    #[clap(long)]
+    pub output: Option<String>,
 }

@@ -13,7 +13,7 @@ async fn main() {
     if args.dns_zone_transfer {
         dns_axfr::attempt_zone_transfer(&args.target).await;
     } else {
-        scanner::scan_target(&args.target, &args.ports, args.only_open).await;
+        scanner::scan_target(&args.target, &args.ports, args.only_open, &args.output).await;
     }
 }
 

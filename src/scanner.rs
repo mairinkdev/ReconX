@@ -1,7 +1,9 @@
 use std::net::{ToSocketAddrs, SocketAddr};
 use tokio::net::TcpStream;
 use colored::*;
-use tokio;
+use std::fs::File;
+use std::io::Write;
+use serde_json::json;
 
 const COMMON_PORTS: [u16; 30] = [
     21, 22, 23, 25, 53, 80, 110, 143, 443, 3389,
@@ -10,7 +12,7 @@ const COMMON_PORTS: [u16; 30] = [
     995, 389, 8081, 10000,
 ];
 
-pub async fn scan_target(domain: &str, port_arg: &Option<String>, only_open: bool) {
+pub async fn scan_target(domain: &str, port_arg: &Option<String>, only_open: bool, output: &Option<String>) {
     println!("{}", "🔎 Resolvendo dominio...".blue());
 
     let addr = format!("{}:0", domain);
@@ -40,6 +42,7 @@ pub async fn scan_target(domain: &str, port_arg: &Option<String>, only_open: boo
     };
 
     let mut open_ports = Vec::new();
+    let mut all_results = Vec::new();
 
     let tasks: Vec<_> = ports.into_iter().map(|port| {
         let ip = ip.clone();
@@ -58,6 +61,8 @@ pub async fn scan_target(domain: &str, port_arg: &Option<String>, only_open: boo
 
     for task in tasks {
         if let Ok((port, is_open, domain)) = task.await {
+            all_results.push((port, is_open));
+
             if is_open {
                 println!("{} {}:{} {}", "✅".green(), domain, port.to_string().bold(), "(aberto)".green());
                 open_ports.push(port);
@@ -68,6 +73,49 @@ pub async fn scan_target(domain: &str, port_arg: &Option<String>, only_open: boo
     }
 
     println!("{}", "✅ Escaneamento finalizado!".blue());
+
+    if let Some(filename) = output {
+        let creditos = "\n\n👨‍💻 Gerado com ReconX • github.com/mairinkdev";
+        use chrono::{Utc, Local};
+
+        if filename.ends_with(".json") {
+            let export = json!({
+                "alvo": domain,
+                "ip_resolvido": ip.to_string(),
+                "data": Utc::now().to_rfc3339(),
+                "resultado": all_results.iter().map(|(port, is_open)| {
+                    json!({
+                        "porta": port,
+                        "status": if *is_open { "aberta" } else { "fechada" },
+                        "emoji": if *is_open { "✅" } else { "❌" }
+                    })
+                }).collect::<Vec<_>>(),
+                "creditos": "https://github.com/mairinkdev"
+            });
+
+            if let Ok(mut file) = File::create(filename) {
+                let _ = writeln!(file, "{}", serde_json::to_string_pretty(&export).unwrap());
+            }
+
+        } else {
+            if let Ok(mut file) = File::create(filename) {
+                let data = Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+                let _ = writeln!(file, "📄 Relatório de Escaneamento - ReconX");
+                let _ = writeln!(file, "Alvo: {}\nIP Resolvido: {}\nData: {}\n", domain, ip, data);
+                let _ = writeln!(file, "Portas escaneadas:\n");
+
+                for (port, is_open) in &all_results {
+                    let status = if *is_open { "aberta" } else { "fechada" };
+                    let emoji = if *is_open { "✅" } else { "❌" };
+                    let _ = writeln!(file, "{} Porta {:<5} - {}", emoji, port, status);
+                }
+
+                let _ = writeln!(file, "{}", creditos);
+            }
+        }
+
+        println!("📁 Resultados exportados para '{}'", filename.yellow());
+    }
 }
 
 fn parse_ports(input: &Option<String>) -> Result<Vec<u16>, String> {
